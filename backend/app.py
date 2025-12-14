@@ -329,7 +329,7 @@ if __name__ == '__main__':
     print("=" * 60)
     print("Plantify Dessert API Server")
     print("=" * 60)
-    print("Starting server on http://localhost:5000")
+    print("Starting server on http://localhost:5001")
     print("\nAvailable endpoints:")
     print("  GET  /                    - API information")
     print("  POST /api/formulate       - Generate recipe")
@@ -339,4 +339,4 @@ if __name__ == '__main__':
     print("\nPress Ctrl+C to stop")
     print("=" * 60)
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)

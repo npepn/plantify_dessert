@@ -85,6 +85,8 @@ pip install -r requirements.txt
 python app.py
 ```
 
+Server will start on `http://localhost:5001`
+
 ### Frontend Setup
 ```bash
 cd frontend
