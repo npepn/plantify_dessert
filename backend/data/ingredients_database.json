@@ -488,6 +488,66 @@
       "availability": "common",
       "substitutes": [],
       "notes": "Enhances flavors. Use 0.5-1% of flour weight."
+    },
+    {
+      "id": "erythritol",
+      "name": "Erythritol",
+      "category": "sweetener",
+      "functional_roles": ["sweetening", "crystallization"],
+      "properties": {
+        "water_content_percent": 0.5
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 2.5,
+        "water_liters_per_kg": 800,
+        "land_m2_per_kg": 1.5,
+        "source": "Sugar alcohol production data"
+      },
+      "cost_per_kg_eur": 12.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["stevia", "monk_fruit"],
+      "notes": "Sugar-free sweetener. Use 1.3x amount of sugar. Zero glycemic index."
+    },
+    {
+      "id": "stevia",
+      "name": "Stevia Extract",
+      "category": "sweetener",
+      "functional_roles": ["sweetening"],
+      "properties": {
+        "water_content_percent": 5.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.2,
+        "water_liters_per_kg": 600,
+        "land_m2_per_kg": 1.0,
+        "source": "Stevia production data"
+      },
+      "cost_per_kg_eur": 45.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["erythritol", "monk_fruit"],
+      "notes": "Sugar-free sweetener. 200x sweeter than sugar. Use sparingly."
+    },
+    {
+      "id": "monk_fruit",
+      "name": "Monk Fruit Sweetener",
+      "category": "sweetener",
+      "functional_roles": ["sweetening"],
+      "properties": {
+        "water_content_percent": 2.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.8,
+        "water_liters_per_kg": 700,
+        "land_m2_per_kg": 1.2,
+        "source": "Monk fruit production data"
+      },
+      "cost_per_kg_eur": 50.00,
+      "allergens": [],
+      "availability": "specialty",
+      "substitutes": ["erythritol", "stevia"],
+      "notes": "Sugar-free sweetener. 150-200x sweeter than sugar. No aftertaste."
     }
   ]
 }

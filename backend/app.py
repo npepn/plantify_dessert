@@ -306,11 +306,31 @@ def scale_recipe():
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
-    return jsonify({
-        'status': 'healthy',
-        'service': 'Plantify Dessert API',
-        'version': '1.0.0'
-    })
+    try:
+        from datetime import datetime
+        
+        # Check if engine is initialized
+        dessert_count = len(formulation_engine.dessert_templates)
+        ingredient_count = len(ingredients_db)
+        
+        return jsonify({
+            'status': 'healthy',
+            'service': 'Plantify Dessert API',
+            'version': '1.0.0',
+            'timestamp': datetime.now().isoformat(),
+            'components': {
+                'formulation_engine': 'operational',
+                'dessert_templates': dessert_count,
+                'ingredient_database': ingredient_count,
+                'available_desserts': list(formulation_engine.dessert_templates.keys())
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 
 @app.errorhandler(404)

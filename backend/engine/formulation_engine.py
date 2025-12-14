@@ -10,7 +10,11 @@ from pathlib import Path
 from models.ingredient import (
     Ingredient, FunctionalRole, IngredientCategory
 )
-from models.dessert import Dessert, create_eclair_template, create_creme_brulee_template
+from models.dessert import (
+    Dessert, create_eclair_template, create_creme_brulee_template,
+    create_croissant_template, create_tart_template,
+    create_macaron_template, create_mousse_template
+)
 from models.recipe import (
     Recipe, RecipeIngredient, RecipeStep, Unit,
     SustainabilityScore, CostAnalysis, NutritionalInfo,
@@ -51,7 +55,11 @@ class FormulationEngine:
         # Load dessert templates
         self.dessert_templates = {
             'eclair': create_eclair_template(),
-            'creme_brulee': create_creme_brulee_template()
+            'creme_brulee': create_creme_brulee_template(),
+            'croissant': create_croissant_template(),
+            'tart': create_tart_template(),
+            'macaron': create_macaron_template(),
+            'mousse': create_mousse_template()
         }
     
     def _load_ingredients(self, db_path: Path) -> Dict[str, Ingredient]:
@@ -109,7 +117,9 @@ class FormulationEngine:
             formulation = self._formulate_component(
                 component,
                 dietary_constraints,
-                sustainability_priority
+                sustainability_priority,
+                yield_servings,
+                dessert.typical_yield
             )
             component_formulations.append(formulation)
             recipe_ingredients.extend(formulation['ingredients'])
@@ -206,7 +216,9 @@ class FormulationEngine:
         self,
         component,
         dietary_constraints: List[str],
-        sustainability_priority: str
+        sustainability_priority: str,
+        yield_servings: int = 12,
+        base_servings: int = 12
     ) -> Dict:
         """Formulate a single dessert component"""
         
@@ -234,7 +246,10 @@ class FormulationEngine:
         # Calculate amounts based on component requirements
         ingredients = self._calculate_component_amounts(
             matched_ingredients,
-            component
+            component,
+            dietary_constraints,
+            yield_servings,
+            base_servings
         )
         
         return {
@@ -275,100 +290,252 @@ class FormulationEngine:
     def _calculate_component_amounts(
         self,
         matched_ingredients: Dict,
-        component
+        component,
+        dietary_constraints: List[str] = None,
+        yield_servings: int = 12,
+        base_servings: int = 12
     ) -> List[RecipeIngredient]:
         """Calculate ingredient amounts for a component"""
         
+        if dietary_constraints is None:
+            dietary_constraints = []
+        
+        # Determine dietary constraints
+        is_sugar_free = 'sugar_free' in dietary_constraints
+        is_gluten_free = 'gluten_free' in dietary_constraints
+        
+        # Calculate scaling factor
+        scale_factor = yield_servings / base_servings
+        
         # This is simplified - in production, use food chemistry models
         ingredients = []
+        
+        # Helper function to scale amounts
+        def scale(amount):
+            """Scale amount based on servings"""
+            if isinstance(amount, int):
+                return int(amount * scale_factor)
+            return round(amount * scale_factor, 1)
+        
+        # Helper function to get sweetener
+        def get_sweetener(amount_g):
+            scaled_amount = scale(amount_g)
+            if is_sugar_free:
+                # Use erythritol (1.3x amount for same sweetness)
+                return RecipeIngredient(
+                    "erythritol", "Erythritol",
+                    int(scaled_amount * 1.3), Unit.GRAM
+                )
+            else:
+                return RecipeIngredient(
+                    "cane_sugar", "Organic Cane Sugar",
+                    scaled_amount, Unit.GRAM
+                )
+        
+        # Helper function to get flour
+        def get_flour(amount_g, prep_note=""):
+            scaled_amount = scale(amount_g)
+            if is_gluten_free:
+                return RecipeIngredient(
+                    "gluten_free_flour_blend", "Gluten-Free Flour Blend",
+                    scaled_amount, Unit.GRAM, prep_note
+                )
+            else:
+                return RecipeIngredient(
+                    "all_purpose_flour", "All-Purpose Flour",
+                    scaled_amount, Unit.GRAM, prep_note
+                )
         
         # Base amounts for common patterns
         if component.name == "Choux Pastry Shell":
             ingredients = [
                 RecipeIngredient(
-                    "water", "Water", 250, Unit.MILLILITER
+                    "water", "Water", scale(250), Unit.MILLILITER
                 ),
                 RecipeIngredient(
                     "vegan_butter", "Plant-Based Butter",
-                    100, Unit.GRAM, "cubed"
+                    scale(100), Unit.GRAM, "cubed"
                 ),
-                RecipeIngredient(
-                    "all_purpose_flour", "All-Purpose Flour",
-                    150, Unit.GRAM, "sifted"
-                ),
+                get_flour(150, "sifted"),
                 RecipeIngredient(
                     "aquafaba", "Aquafaba",
-                    200, Unit.MILLILITER, "room temperature"
+                    scale(200), Unit.MILLILITER, "room temperature"
                 ),
                 RecipeIngredient(
-                    "salt", "Fine Sea Salt", 2, Unit.GRAM
+                    "salt", "Fine Sea Salt", scale(2), Unit.GRAM
                 )
             ]
         elif component.name == "Pastry Cream Filling":
             ingredients = [
                 RecipeIngredient(
                     "coconut_cream", "Coconut Cream",
-                    400, Unit.MILLILITER
+                    scale(400), Unit.MILLILITER
                 ),
-                RecipeIngredient(
-                    "cane_sugar", "Organic Cane Sugar",
-                    80, Unit.GRAM
-                ),
+                get_sweetener(80),
                 RecipeIngredient(
                     "cornstarch", "Cornstarch",
-                    30, Unit.GRAM
+                    scale(30), Unit.GRAM
                 ),
                 RecipeIngredient(
                     "vanilla_extract", "Pure Vanilla Extract",
-                    10, Unit.MILLILITER
+                    scale(10), Unit.MILLILITER
                 ),
                 RecipeIngredient(
-                    "salt", "Fine Sea Salt", 1, Unit.GRAM
+                    "salt", "Fine Sea Salt", scale(1), Unit.GRAM
                 )
             ]
         elif component.name == "Chocolate Glaze":
-            ingredients = [
-                RecipeIngredient(
-                    "cocoa_powder", "Dutch-Process Cocoa Powder",
-                    40, Unit.GRAM
-                ),
-                RecipeIngredient(
-                    "coconut_oil_refined", "Refined Coconut Oil",
-                    60, Unit.GRAM, "melted"
-                ),
-                RecipeIngredient(
-                    "maple_syrup", "Pure Maple Syrup",
-                    40, Unit.MILLILITER
-                )
-            ]
+            if is_sugar_free:
+                ingredients = [
+                    RecipeIngredient(
+                        "cocoa_powder", "Dutch-Process Cocoa Powder",
+                        scale(40), Unit.GRAM
+                    ),
+                    RecipeIngredient(
+                        "coconut_oil_refined", "Refined Coconut Oil",
+                        scale(60), Unit.GRAM, "melted"
+                    ),
+                    get_sweetener(30)
+                ]
+            else:
+                ingredients = [
+                    RecipeIngredient(
+                        "cocoa_powder", "Dutch-Process Cocoa Powder",
+                        scale(40), Unit.GRAM
+                    ),
+                    RecipeIngredient(
+                        "coconut_oil_refined", "Refined Coconut Oil",
+                        scale(60), Unit.GRAM, "melted"
+                    ),
+                    RecipeIngredient(
+                        "maple_syrup", "Pure Maple Syrup",
+                        scale(40), Unit.MILLILITER
+                    )
+                ]
         elif component.name == "Custard Base":
             ingredients = [
                 RecipeIngredient(
                     "coconut_cream", "Coconut Cream",
-                    600, Unit.MILLILITER
+                    scale(600), Unit.MILLILITER
                 ),
-                RecipeIngredient(
-                    "cane_sugar", "Organic Cane Sugar",
-                    100, Unit.GRAM
-                ),
+                get_sweetener(100),
                 RecipeIngredient(
                     "cornstarch", "Cornstarch",
-                    40, Unit.GRAM
+                    scale(40), Unit.GRAM
                 ),
                 RecipeIngredient(
                     "agar_agar", "Agar Agar Powder",
-                    3, Unit.GRAM
+                    scale(3), Unit.GRAM
                 ),
                 RecipeIngredient(
                     "vanilla_extract", "Pure Vanilla Extract",
-                    10, Unit.MILLILITER
+                    scale(10), Unit.MILLILITER
                 )
             ]
         elif component.name == "Caramelized Sugar Top":
             ingredients = [
+                get_sweetener(60)
+            ]
+        elif component.name == "Laminated Dough":
+            ingredients = [
+                get_flour(500, "sifted"),
                 RecipeIngredient(
-                    "cane_sugar", "Organic Cane Sugar",
-                    60, Unit.GRAM
+                    "water", "Water",
+                    250, Unit.MILLILITER, "cold"
+                ),
+                RecipeIngredient(
+                    "vegan_butter", "Plant-Based Butter",
+                    300, Unit.GRAM, "cold, for lamination"
+                ),
+                RecipeIngredient(
+                    "salt", "Fine Sea Salt", 10, Unit.GRAM
+                ),
+                get_sweetener(50)
+            ]
+        elif component.name == "Tart Shell":
+            ingredients = [
+                get_flour(250),
+                RecipeIngredient(
+                    "vegan_butter", "Plant-Based Butter",
+                    125, Unit.GRAM, "cold, cubed"
+                ),
+                get_sweetener(50),
+                RecipeIngredient(
+                    "water", "Water",
+                    50, Unit.MILLILITER, "ice cold"
+                ),
+                RecipeIngredient(
+                    "salt", "Fine Sea Salt", 2, Unit.GRAM
+                )
+            ]
+        elif component.name == "Macaron Shell":
+            ingredients = [
+                RecipeIngredient(
+                    "aquafaba", "Aquafaba",
+                    150, Unit.MILLILITER
+                ),
+                get_sweetener(200),
+                get_flour(200, "finely ground"),
+                RecipeIngredient(
+                    "cornstarch", "Cornstarch",
+                    50, Unit.GRAM
+                )
+            ]
+        elif component.name == "Mousse Base":
+            if is_sugar_free:
+                ingredients = [
+                    RecipeIngredient(
+                        "coconut_cream", "Coconut Cream",
+                        400, Unit.MILLILITER, "chilled"
+                    ),
+                    RecipeIngredient(
+                        "cocoa_powder", "Dutch-Process Cocoa Powder",
+                        60, Unit.GRAM
+                    ),
+                    get_sweetener(60),
+                    RecipeIngredient(
+                        "vanilla_extract", "Pure Vanilla Extract",
+                        5, Unit.MILLILITER
+                    ),
+                    RecipeIngredient(
+                        "agar_agar", "Agar Agar Powder",
+                        2, Unit.GRAM
+                    )
+                ]
+            else:
+                ingredients = [
+                    RecipeIngredient(
+                        "coconut_cream", "Coconut Cream",
+                        400, Unit.MILLILITER, "chilled"
+                    ),
+                    RecipeIngredient(
+                        "cocoa_powder", "Dutch-Process Cocoa Powder",
+                        60, Unit.GRAM
+                    ),
+                    RecipeIngredient(
+                        "maple_syrup", "Pure Maple Syrup",
+                        80, Unit.MILLILITER
+                    ),
+                    RecipeIngredient(
+                        "vanilla_extract", "Pure Vanilla Extract",
+                        5, Unit.MILLILITER
+                    ),
+                    RecipeIngredient(
+                        "agar_agar", "Agar Agar Powder",
+                        2, Unit.GRAM
+                    )
+                ]
+        elif component.name == "Filling":
+            # Generic filling for macarons, tarts, etc.
+            ingredients = [
+                RecipeIngredient(
+                    "vegan_butter", "Plant-Based Butter",
+                    100, Unit.GRAM, "softened"
+                ),
+                get_sweetener(50),
+                RecipeIngredient(
+                    "vanilla_extract", "Pure Vanilla Extract",
+                    5, Unit.MILLILITER
                 )
             ]
         
@@ -382,7 +549,6 @@ class FormulationEngine:
         """Generate step-by-step instructions"""
         
         instructions = []
-        step_num = 1
         
         if dessert.id == "eclair":
             instructions = [
@@ -521,6 +687,174 @@ class FormulationEngine:
                     11, "Caramelize sugar with kitchen torch until golden and bubbling.",
                     5, None, True,
                     ["Keep torch moving to avoid burning. Let cool 2 min before serving"]
+                )
+            ]
+        elif dessert.id == "croissant":
+            instructions = [
+                RecipeStep(
+                    1, "Make dough: Mix flour, water, salt, sugar until combined. Knead 5 min.",
+                    10, None, False
+                ),
+                RecipeStep(
+                    2, "Wrap dough, refrigerate 1 hour.",
+                    60, None, False
+                ),
+                RecipeStep(
+                    3, "Roll butter between parchment into 15cm square. Chill.",
+                    10, None, False
+                ),
+                RecipeStep(
+                    4, "Roll dough into 30cm square. Place butter in center, fold dough over.",
+                    10, None, True,
+                    ["Butter should be cold but pliable"]
+                ),
+                RecipeStep(
+                    5, "Roll into rectangle, fold in thirds. Chill 30 min. Repeat 3 times.",
+                    120, None, True,
+                    ["This creates the flaky layers"]
+                ),
+                RecipeStep(
+                    6, "Roll to 5mm thickness, cut triangles, roll into crescents.",
+                    20, None, False
+                ),
+                RecipeStep(
+                    7, "Proof 2 hours at room temperature until doubled.",
+                    120, None, False
+                ),
+                RecipeStep(
+                    8, "Bake at 200°C for 15-20 minutes until golden.",
+                    20, 200, False
+                )
+            ]
+        elif dessert.id == "tart":
+            instructions = [
+                RecipeStep(
+                    1, "Make dough: Mix flour, sugar, salt. Cut in cold butter until crumbly.",
+                    10, None, False
+                ),
+                RecipeStep(
+                    2, "Add ice water, mix until dough forms. Chill 30 min.",
+                    30, None, False
+                ),
+                RecipeStep(
+                    3, "Roll dough, fit into tart pan. Prick bottom with fork.",
+                    10, None, False
+                ),
+                RecipeStep(
+                    4, "Line with parchment, fill with pie weights. Blind bake 15 min at 180°C.",
+                    15, 180, True,
+                    ["Blind baking prevents soggy bottom"]
+                ),
+                RecipeStep(
+                    5, "Remove weights, bake 10 more minutes until golden.",
+                    10, 180, False
+                ),
+                RecipeStep(
+                    6, "Make pastry cream: Cook coconut cream, sugar, cornstarch until thick.",
+                    10, None, False
+                ),
+                RecipeStep(
+                    7, "Cool cream, fill tart shell. Top with fresh fruit.",
+                    15, None, False
+                ),
+                RecipeStep(
+                    8, "Chill 2 hours before serving.",
+                    120, None, False
+                )
+            ]
+        elif dessert.id == "macaron":
+            instructions = [
+                RecipeStep(
+                    1, "Whip aquafaba to stiff peaks, gradually add sugar.",
+                    10, None, True,
+                    ["Peaks should stand straight up"]
+                ),
+                RecipeStep(
+                    2, "Sift flour and cornstarch. Fold gently into meringue.",
+                    5, None, True,
+                    ["Fold until mixture flows like lava"]
+                ),
+                RecipeStep(
+                    3, "Pipe 3cm circles onto silicone mat. Tap pan to release bubbles.",
+                    15, None, False
+                ),
+                RecipeStep(
+                    4, "Let rest 30-60 min until surface is dry to touch.",
+                    45, None, True,
+                    ["This forms the 'skin' for feet"]
+                ),
+                RecipeStep(
+                    5, "Bake at 150°C for 12-15 minutes. Let cool completely.",
+                    15, 150, False
+                ),
+                RecipeStep(
+                    6, "Make filling: Beat butter, sugar, vanilla until fluffy.",
+                    5, None, False
+                ),
+                RecipeStep(
+                    7, "Pipe filling on half the shells, sandwich with remaining shells.",
+                    10, None, False
+                ),
+                RecipeStep(
+                    8, "Refrigerate 24 hours for best flavor and texture.",
+                    1440, None, False
+                )
+            ]
+        elif dessert.id == "mousse":
+            instructions = [
+                RecipeStep(
+                    1, "Bloom agar agar in 2 tbsp water for 5 minutes.",
+                    5, None, False
+                ),
+                RecipeStep(
+                    2, "Heat 100ml coconut cream with agar until dissolved.",
+                    5, None, True,
+                    ["Must reach 85°C to activate agar"]
+                ),
+                RecipeStep(
+                    3, "Whisk in cocoa powder and maple syrup until smooth.",
+                    3, None, False
+                ),
+                RecipeStep(
+                    4, "Let cool to room temperature, stirring occasionally.",
+                    15, None, False
+                ),
+                RecipeStep(
+                    5, "Whip remaining coconut cream to soft peaks.",
+                    5, None, False
+                ),
+                RecipeStep(
+                    6, "Fold chocolate mixture into whipped cream gently.",
+                    5, None, True,
+                    ["Fold carefully to maintain airiness"]
+                ),
+                RecipeStep(
+                    7, "Divide into serving glasses. Chill 4 hours until set.",
+                    240, None, False
+                ),
+                RecipeStep(
+                    8, "Serve chilled, optionally garnish with berries.",
+                    2, None, False
+                )
+            ]
+        else:
+            # Generic instructions for any other dessert
+            instructions = [
+                RecipeStep(
+                    1, "Prepare all ingredients according to recipe specifications.",
+                    10, None, False
+                ),
+                RecipeStep(
+                    2, "Follow standard preparation techniques for this dessert type.",
+                    30, None, False
+                ),
+                RecipeStep(
+                    3, "Bake or chill as required by the dessert.",
+                    30, None, False
+                ),
+                RecipeStep(
+                    4, "Allow to cool completely before serving.",
+                    30, None, False
                 )
             ]
         

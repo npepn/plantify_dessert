@@ -311,6 +311,217 @@ def create_creme_brulee_template() -> Dessert:
     )
 
 
+def create_croissant_template() -> Dessert:
+    """Create template for vegan croissant"""
+    return Dessert(
+        id="croissant",
+        name="Croissant",
+        category=DessertCategory.LAMINATED,
+        components=[
+            ComponentRequirements(
+                name="Laminated Dough",
+                required_functions=[
+                    FunctionalRole.FAT_STRUCTURING,
+                    FunctionalRole.BINDING,
+                    FunctionalRole.MOISTURE_RETENTION
+                ],
+                texture_targets=[TextureProfile.FLAKY, TextureProfile.CRISPY],
+                typical_ratio_percent=100,
+                critical_properties={
+                    'fat_content': (25, 35),
+                    'water_content': (35, 45)
+                }
+            )
+        ],
+        difficulty=DifficultyLevel.EXPERT,
+        typical_yield=12,
+        preparation_time_minutes=180,
+        baking_temp_celsius=200,
+        baking_time_minutes=20,
+        special_equipment=["rolling pin", "pastry brush"],
+        critical_techniques=[
+            "lamination technique",
+            "proper folding",
+            "temperature control",
+            "resting periods"
+        ],
+        common_failures=[
+            "butter breaks through dough",
+            "layers don't separate",
+            "dough is too tough"
+        ],
+        success_indicators=[
+            "distinct flaky layers",
+            "golden brown color",
+            "airy interior"
+        ],
+        notes="Requires precise temperature control and multiple resting periods"
+    )
+
+
+def create_tart_template() -> Dessert:
+    """Create template for vegan tart"""
+    return Dessert(
+        id="tart",
+        name="Fruit Tart",
+        category=DessertCategory.TART,
+        components=[
+            ComponentRequirements(
+                name="Tart Shell",
+                required_functions=[
+                    FunctionalRole.FAT_STRUCTURING,
+                    FunctionalRole.BINDING
+                ],
+                texture_targets=[TextureProfile.CRISPY, TextureProfile.CRUNCHY],
+                typical_ratio_percent=40,
+                critical_properties={
+                    'fat_content': (30, 40)
+                }
+            ),
+            ComponentRequirements(
+                name="Pastry Cream",
+                required_functions=[
+                    FunctionalRole.THICKENING,
+                    FunctionalRole.EMULSIFICATION
+                ],
+                texture_targets=[TextureProfile.CREAMY],
+                typical_ratio_percent=60,
+                critical_properties={
+                    'fat_content': (10, 20)
+                }
+            )
+        ],
+        difficulty=DifficultyLevel.INTERMEDIATE,
+        typical_yield=8,
+        preparation_time_minutes=90,
+        baking_temp_celsius=180,
+        baking_time_minutes=25,
+        special_equipment=["tart pan", "pie weights"],
+        critical_techniques=[
+            "blind baking",
+            "even rolling",
+            "proper crimping"
+        ],
+        common_failures=[
+            "soggy bottom",
+            "shrinking crust",
+            "cracking"
+        ],
+        success_indicators=[
+            "crisp shell",
+            "smooth cream",
+            "no gaps"
+        ],
+        notes="Blind baking essential for crisp crust"
+    )
+
+
+def create_macaron_template() -> Dessert:
+    """Create template for vegan macaron"""
+    return Dessert(
+        id="macaron",
+        name="Macaron",
+        category=DessertCategory.MACARON,
+        components=[
+            ComponentRequirements(
+                name="Macaron Shell",
+                required_functions=[
+                    FunctionalRole.FOAMING,
+                    FunctionalRole.BINDING,
+                    FunctionalRole.CRYSTALLIZATION
+                ],
+                texture_targets=[TextureProfile.SMOOTH, TextureProfile.CHEWY],
+                typical_ratio_percent=70,
+                critical_properties={
+                    'protein_content': (5, 10)
+                }
+            ),
+            ComponentRequirements(
+                name="Filling",
+                required_functions=[
+                    FunctionalRole.EMULSIFICATION,
+                    FunctionalRole.FLAVOR_CARRIER
+                ],
+                texture_targets=[TextureProfile.CREAMY],
+                typical_ratio_percent=30,
+                critical_properties={
+                    'fat_content': (40, 60)
+                }
+            )
+        ],
+        difficulty=DifficultyLevel.EXPERT,
+        typical_yield=24,
+        preparation_time_minutes=120,
+        baking_temp_celsius=150,
+        baking_time_minutes=15,
+        special_equipment=["piping bag", "silicone mat"],
+        critical_techniques=[
+            "macaronage technique",
+            "proper piping",
+            "resting before baking",
+            "temperature precision"
+        ],
+        common_failures=[
+            "no feet formation",
+            "hollow shells",
+            "cracked tops",
+            "uneven baking"
+        ],
+        success_indicators=[
+            "smooth tops",
+            "ruffled feet",
+            "chewy texture"
+        ],
+        notes="Extremely technique-sensitive, requires practice"
+    )
+
+
+def create_mousse_template() -> Dessert:
+    """Create template for vegan mousse"""
+    return Dessert(
+        id="mousse",
+        name="Chocolate Mousse",
+        category=DessertCategory.MOUSSE,
+        components=[
+            ComponentRequirements(
+                name="Mousse Base",
+                required_functions=[
+                    FunctionalRole.FOAMING,
+                    FunctionalRole.EMULSIFICATION,
+                    FunctionalRole.THICKENING
+                ],
+                texture_targets=[TextureProfile.AIRY, TextureProfile.CREAMY],
+                typical_ratio_percent=100,
+                critical_properties={
+                    'fat_content': (15, 25)
+                }
+            )
+        ],
+        difficulty=DifficultyLevel.INTERMEDIATE,
+        typical_yield=6,
+        preparation_time_minutes=30,
+        baking_temp_celsius=None,
+        baking_time_minutes=None,
+        special_equipment=["whisk", "mixing bowls"],
+        critical_techniques=[
+            "proper folding",
+            "temperature control",
+            "aeration technique"
+        ],
+        common_failures=[
+            "deflated mousse",
+            "grainy texture",
+            "separation"
+        ],
+        success_indicators=[
+            "light and airy",
+            "holds shape",
+            "smooth texture"
+        ],
+        notes="No baking required, must chill to set"
+    )
+
+
 # Example usage
 if __name__ == "__main__":
     eclair = create_eclair_template()

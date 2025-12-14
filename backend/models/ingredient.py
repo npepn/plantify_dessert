@@ -128,6 +128,16 @@ class Ingredient:
                     if self.has_allergen(allergen):
                         return False
         
+        # Check sugar-free constraint
+        if 'sugar_free' in dietary_constraints:
+            # Exclude regular sugars and syrups
+            sugar_ingredients = [
+                'cane_sugar', 'coconut_sugar', 'maple_syrup', 
+                'agave_syrup', 'date_syrup', 'brown_sugar'
+            ]
+            if self.id in sugar_ingredients:
+                return False
+        
         return True
     
     def calculate_impact(self, amount_kg: float) -> Dict[str, float]:
