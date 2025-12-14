@@ -1,0 +1,493 @@
+{
+  "ingredients": [
+    {
+      "id": "coconut_oil_refined",
+      "name": "Refined Coconut Oil",
+      "category": "fat",
+      "functional_roles": ["fat_structuring", "moisture_retention", "flavor_carrier"],
+      "properties": {
+        "melting_point_celsius": 24.0,
+        "fat_content_percent": 100.0,
+        "water_content_percent": 0.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 2.5,
+        "water_liters_per_kg": 2500,
+        "land_m2_per_kg": 7.5,
+        "source": "Poore & Nemecek, 2018"
+      },
+      "cost_per_kg_eur": 8.50,
+      "allergens": ["coconut"],
+      "availability": "common",
+      "substitutes": ["cocoa_butter", "vegan_butter"],
+      "notes": "Excellent for lamination due to high melting point. Neutral flavor when refined."
+    },
+    {
+      "id": "cocoa_butter",
+      "name": "Cocoa Butter",
+      "category": "fat",
+      "functional_roles": ["fat_structuring", "crystallization", "flavor_carrier"],
+      "properties": {
+        "melting_point_celsius": 34.0,
+        "fat_content_percent": 100.0,
+        "water_content_percent": 0.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 3.8,
+        "water_liters_per_kg": 3500,
+        "land_m2_per_kg": 12.0,
+        "source": "Poore & Nemecek, 2018"
+      },
+      "cost_per_kg_eur": 18.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["coconut_oil_refined"],
+      "notes": "Premium fat for chocolate work. High melting point ideal for tempering."
+    },
+    {
+      "id": "vegan_butter",
+      "name": "Plant-Based Butter",
+      "category": "fat",
+      "functional_roles": ["fat_structuring", "emulsification", "flavor_carrier"],
+      "properties": {
+        "melting_point_celsius": 32.0,
+        "fat_content_percent": 80.0,
+        "water_content_percent": 16.0,
+        "emulsifying_capacity": 0.75
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.8,
+        "water_liters_per_kg": 1200,
+        "land_m2_per_kg": 4.5,
+        "source": "Industry average"
+      },
+      "cost_per_kg_eur": 6.50,
+      "allergens": ["soy"],
+      "availability": "common",
+      "substitutes": ["coconut_oil_refined"],
+      "notes": "Good all-purpose fat. Contains emulsifiers for stability."
+    },
+    {
+      "id": "aquafaba",
+      "name": "Aquafaba (Chickpea Brine)",
+      "category": "protein",
+      "functional_roles": ["foaming", "emulsification", "binding"],
+      "properties": {
+        "protein_content_percent": 0.5,
+        "water_content_percent": 98.0,
+        "foaming_capacity": 0.85,
+        "emulsifying_capacity": 0.65
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 0.3,
+        "water_liters_per_kg": 150,
+        "land_m2_per_kg": 0.8,
+        "source": "Chickpea production data"
+      },
+      "cost_per_kg_eur": 0.50,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["soy_protein_isolate"],
+      "notes": "Excellent egg white replacement. Whips to stiff peaks. Use 3 tbsp per egg white."
+    },
+    {
+      "id": "soy_lecithin",
+      "name": "Soy Lecithin",
+      "category": "emulsifier",
+      "functional_roles": ["emulsification", "moisture_retention"],
+      "properties": {
+        "emulsifying_capacity": 0.95,
+        "fat_content_percent": 60.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.2,
+        "water_liters_per_kg": 800,
+        "land_m2_per_kg": 3.0,
+        "source": "Soy processing data"
+      },
+      "cost_per_kg_eur": 12.00,
+      "allergens": ["soy"],
+      "availability": "common",
+      "substitutes": ["sunflower_lecithin"],
+      "notes": "Powerful emulsifier. Use 0.5-2% of total weight."
+    },
+    {
+      "id": "sunflower_lecithin",
+      "name": "Sunflower Lecithin",
+      "category": "emulsifier",
+      "functional_roles": ["emulsification", "moisture_retention"],
+      "properties": {
+        "emulsifying_capacity": 0.90,
+        "fat_content_percent": 65.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.5,
+        "water_liters_per_kg": 900,
+        "land_m2_per_kg": 3.5,
+        "source": "Sunflower processing data"
+      },
+      "cost_per_kg_eur": 15.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["soy_lecithin"],
+      "notes": "Soy-free alternative. Slightly less effective than soy lecithin."
+    },
+    {
+      "id": "coconut_cream",
+      "name": "Coconut Cream (Full Fat)",
+      "category": "liquid",
+      "functional_roles": ["emulsification", "flavor_carrier", "thickening"],
+      "properties": {
+        "fat_content_percent": 24.0,
+        "water_content_percent": 68.0,
+        "protein_content_percent": 2.3,
+        "viscosity_cps": 5000,
+        "emulsifying_capacity": 0.70
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 2.8,
+        "water_liters_per_kg": 2800,
+        "land_m2_per_kg": 8.0,
+        "source": "Coconut production data"
+      },
+      "cost_per_kg_eur": 4.50,
+      "allergens": ["coconut"],
+      "availability": "common",
+      "substitutes": ["oat_cream", "cashew_cream"],
+      "notes": "Rich, creamy texture. Excellent for custards and mousses."
+    },
+    {
+      "id": "oat_cream",
+      "name": "Oat Cream",
+      "category": "liquid",
+      "functional_roles": ["emulsification", "flavor_carrier", "thickening"],
+      "properties": {
+        "fat_content_percent": 10.0,
+        "water_content_percent": 85.0,
+        "protein_content_percent": 1.0,
+        "viscosity_cps": 3000
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 0.9,
+        "water_liters_per_kg": 600,
+        "land_m2_per_kg": 2.5,
+        "source": "Oat production data"
+      },
+      "cost_per_kg_eur": 3.20,
+      "allergens": ["gluten"],
+      "availability": "common",
+      "substitutes": ["coconut_cream", "soy_cream"],
+      "notes": "Lower fat but excellent sustainability. Neutral flavor."
+    },
+    {
+      "id": "cashew_cream",
+      "name": "Cashew Cream",
+      "category": "liquid",
+      "functional_roles": ["emulsification", "thickening", "flavor_carrier"],
+      "properties": {
+        "fat_content_percent": 20.0,
+        "water_content_percent": 70.0,
+        "protein_content_percent": 5.0,
+        "viscosity_cps": 8000,
+        "emulsifying_capacity": 0.80
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 3.2,
+        "water_liters_per_kg": 4000,
+        "land_m2_per_kg": 10.0,
+        "source": "Cashew production data"
+      },
+      "cost_per_kg_eur": 12.00,
+      "allergens": ["cashew", "tree_nuts"],
+      "availability": "specialty",
+      "substitutes": ["coconut_cream"],
+      "notes": "Ultra-smooth texture. Premium option for high-end desserts."
+    },
+    {
+      "id": "cornstarch",
+      "name": "Cornstarch",
+      "category": "flour",
+      "functional_roles": ["thickening", "binding"],
+      "properties": {
+        "water_content_percent": 12.0,
+        "protein_content_percent": 0.3
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 0.7,
+        "water_liters_per_kg": 500,
+        "land_m2_per_kg": 1.8,
+        "source": "Corn production data"
+      },
+      "cost_per_kg_eur": 2.50,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["tapioca_starch", "arrowroot"],
+      "notes": "Clear gel when cooked. Use 1-2 tbsp per cup liquid for custards."
+    },
+    {
+      "id": "tapioca_starch",
+      "name": "Tapioca Starch",
+      "category": "flour",
+      "functional_roles": ["thickening", "binding"],
+      "properties": {
+        "water_content_percent": 11.0,
+        "protein_content_percent": 0.2
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 0.8,
+        "water_liters_per_kg": 600,
+        "land_m2_per_kg": 2.0,
+        "source": "Cassava production data"
+      },
+      "cost_per_kg_eur": 3.50,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["cornstarch"],
+      "notes": "Creates glossy finish. More stable than cornstarch in acidic conditions."
+    },
+    {
+      "id": "all_purpose_flour",
+      "name": "All-Purpose Flour",
+      "category": "flour",
+      "functional_roles": ["binding", "fat_structuring"],
+      "properties": {
+        "protein_content_percent": 10.5,
+        "water_content_percent": 12.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 0.6,
+        "water_liters_per_kg": 1800,
+        "land_m2_per_kg": 3.5,
+        "source": "Wheat production data"
+      },
+      "cost_per_kg_eur": 1.20,
+      "allergens": ["wheat", "gluten"],
+      "availability": "common",
+      "substitutes": ["gluten_free_flour_blend"],
+      "notes": "Standard flour for choux pastry and general baking."
+    },
+    {
+      "id": "gluten_free_flour_blend",
+      "name": "Gluten-Free Flour Blend",
+      "category": "flour",
+      "functional_roles": ["binding"],
+      "properties": {
+        "protein_content_percent": 4.0,
+        "water_content_percent": 11.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.2,
+        "water_liters_per_kg": 1200,
+        "land_m2_per_kg": 4.0,
+        "source": "Mixed grain data"
+      },
+      "cost_per_kg_eur": 4.50,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["all_purpose_flour"],
+      "notes": "Typically rice flour + starches + xanthan gum. May need extra binding."
+    },
+    {
+      "id": "cane_sugar",
+      "name": "Organic Cane Sugar",
+      "category": "sweetener",
+      "functional_roles": ["sweetening", "browning", "crystallization"],
+      "properties": {
+        "water_content_percent": 0.5
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.8,
+        "water_liters_per_kg": 1500,
+        "land_m2_per_kg": 2.0,
+        "source": "Sugar cane production data"
+      },
+      "cost_per_kg_eur": 2.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["coconut_sugar", "date_syrup"],
+      "notes": "Standard sweetener. Essential for caramelization."
+    },
+    {
+      "id": "coconut_sugar",
+      "name": "Coconut Sugar",
+      "category": "sweetener",
+      "functional_roles": ["sweetening", "browning"],
+      "properties": {
+        "water_content_percent": 2.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 2.2,
+        "water_liters_per_kg": 2000,
+        "land_m2_per_kg": 6.0,
+        "source": "Coconut production data"
+      },
+      "cost_per_kg_eur": 8.00,
+      "allergens": ["coconut"],
+      "availability": "common",
+      "substitutes": ["cane_sugar"],
+      "notes": "Lower glycemic index. Caramel-like flavor."
+    },
+    {
+      "id": "maple_syrup",
+      "name": "Pure Maple Syrup",
+      "category": "sweetener",
+      "functional_roles": ["sweetening", "browning", "moisture_retention"],
+      "properties": {
+        "water_content_percent": 33.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.5,
+        "water_liters_per_kg": 800,
+        "land_m2_per_kg": 1.0,
+        "source": "Maple production data"
+      },
+      "cost_per_kg_eur": 15.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["agave_syrup"],
+      "notes": "Adds moisture and distinct flavor. Reduce other liquids by 25%."
+    },
+    {
+      "id": "vanilla_extract",
+      "name": "Pure Vanilla Extract",
+      "category": "flavoring",
+      "functional_roles": ["flavor_carrier"],
+      "properties": {
+        "water_content_percent": 65.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 5.0,
+        "water_liters_per_kg": 3000,
+        "land_m2_per_kg": 15.0,
+        "source": "Vanilla production data"
+      },
+      "cost_per_kg_eur": 250.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["vanilla_bean_paste"],
+      "notes": "Essential flavoring. Use 1-2 tsp per recipe."
+    },
+    {
+      "id": "cocoa_powder",
+      "name": "Dutch-Process Cocoa Powder",
+      "category": "flavoring",
+      "functional_roles": ["flavor_carrier", "browning"],
+      "properties": {
+        "fat_content_percent": 10.0,
+        "protein_content_percent": 20.0,
+        "ph": 7.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 4.5,
+        "water_liters_per_kg": 4000,
+        "land_m2_per_kg": 18.0,
+        "source": "Cocoa production data"
+      },
+      "cost_per_kg_eur": 12.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["carob_powder"],
+      "notes": "Alkalized for neutral pH. Darker color, milder flavor."
+    },
+    {
+      "id": "baking_powder",
+      "name": "Baking Powder (Aluminum-Free)",
+      "category": "leavening",
+      "functional_roles": ["foaming"],
+      "properties": {
+        "ph": 8.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.0,
+        "water_liters_per_kg": 200,
+        "land_m2_per_kg": 0.5,
+        "source": "Chemical production data"
+      },
+      "cost_per_kg_eur": 5.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": [],
+      "notes": "Double-acting. Use 1-2 tsp per cup flour."
+    },
+    {
+      "id": "xanthan_gum",
+      "name": "Xanthan Gum",
+      "category": "stabilizer",
+      "functional_roles": ["thickening", "binding", "emulsification"],
+      "properties": {
+        "viscosity_cps": 50000
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 2.0,
+        "water_liters_per_kg": 500,
+        "land_m2_per_kg": 1.0,
+        "source": "Fermentation process data"
+      },
+      "cost_per_kg_eur": 35.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["guar_gum"],
+      "notes": "Very powerful. Use 0.1-0.5% of total weight."
+    },
+    {
+      "id": "agar_agar",
+      "name": "Agar Agar Powder",
+      "category": "stabilizer",
+      "functional_roles": ["thickening", "binding"],
+      "properties": {
+        "protein_content_percent": 6.0
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 1.5,
+        "water_liters_per_kg": 1000,
+        "land_m2_per_kg": 2.0,
+        "source": "Seaweed production data"
+      },
+      "cost_per_kg_eur": 45.00,
+      "allergens": [],
+      "availability": "specialty",
+      "substitutes": ["carrageenan"],
+      "notes": "Sets at room temperature. Use 1-2 tsp per cup liquid."
+    },
+    {
+      "id": "flax_meal",
+      "name": "Ground Flaxseed Meal",
+      "category": "protein",
+      "functional_roles": ["binding", "emulsification"],
+      "properties": {
+        "protein_content_percent": 18.0,
+        "fat_content_percent": 42.0,
+        "emulsifying_capacity": 0.60
+      },
+      "sustainability": {
+        "co2_kg_per_kg": 0.8,
+        "water_liters_per_kg": 1200,
+        "land_m2_per_kg": 3.0,
+        "source": "Flax production data"
+      },
+      "cost_per_kg_eur": 6.00,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": ["chia_seeds"],
+      "notes": "Egg replacer: 1 tbsp + 3 tbsp water = 1 egg. Let sit 5 min."
+    },
+    {
+      "id": "salt",
+      "name": "Fine Sea Salt",
+      "category": "flavoring",
+      "functional_roles": ["flavor_carrier"],
+      "properties": {},
+      "sustainability": {
+        "co2_kg_per_kg": 0.2,
+        "water_liters_per_kg": 50,
+        "land_m2_per_kg": 0.1,
+        "source": "Salt production data"
+      },
+      "cost_per_kg_eur": 1.50,
+      "allergens": [],
+      "availability": "common",
+      "substitutes": [],
+      "notes": "Enhances flavors. Use 0.5-1% of flour weight."
+    }
+  ]
+}

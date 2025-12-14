@@ -1,0 +1,320 @@
+"""
+Dessert Model
+Represents French dessert types with their requirements and constraints.
+"""
+
+from dataclasses import dataclass, field
+from typing import List, Dict, Optional
+from enum import Enum
+from models.ingredient import FunctionalRole
+
+
+class DessertCategory(Enum):
+    """Categories of French desserts"""
+    CHOUX = "choux"  # Éclairs, profiteroles
+    LAMINATED = "laminated"  # Croissants, puff pastry
+    TART = "tart"
+    LAYERED = "layered"  # Mille-feuille
+    MACARON = "macaron"
+    CUSTARD = "custard"  # Crème brûlée
+    MOUSSE = "mousse"
+    CAKE = "cake"
+
+
+class TextureProfile(Enum):
+    """Desired texture characteristics"""
+    CRISPY = "crispy"
+    FLAKY = "flaky"
+    CREAMY = "creamy"
+    AIRY = "airy"
+    SMOOTH = "smooth"
+    CRUNCHY = "crunchy"
+    SOFT = "soft"
+    CHEWY = "chewy"
+
+
+class DifficultyLevel(Enum):
+    """Technical difficulty for professional kitchens"""
+    BEGINNER = "beginner"
+    INTERMEDIATE = "intermediate"
+    ADVANCED = "advanced"
+    EXPERT = "expert"
+
+
+@dataclass
+class ComponentRequirements:
+    """Requirements for a dessert component (e.g., shell, filling)"""
+    name: str
+    required_functions: List[FunctionalRole]
+    texture_targets: List[TextureProfile]
+    typical_ratio_percent: float  # Percentage of total dessert
+    critical_properties: Dict[str, tuple] = field(default_factory=dict)
+    # e.g., {'fat_content': (20, 40)} means 20-40% fat content
+    
+    def validate_properties(self, properties: Dict) -> List[str]:
+        """
+        Validate if properties meet requirements
+        
+        Returns:
+            List of validation errors (empty if valid)
+        """
+        errors = []
+        for prop, (min_val, max_val) in self.critical_properties.items():
+            if prop in properties:
+                value = properties[prop]
+                if value < min_val or value > max_val:
+                    errors.append(
+                        f"{prop} {value} outside range "
+                        f"[{min_val}, {max_val}]"
+                    )
+        return errors
+
+
+@dataclass
+class Dessert:
+    """
+    Comprehensive dessert model for formulation
+    """
+    id: str
+    name: str
+    category: DessertCategory
+    components: List[ComponentRequirements]
+    difficulty: DifficultyLevel
+    typical_yield: int  # Number of servings
+    preparation_time_minutes: int
+    baking_temp_celsius: Optional[int] = None
+    baking_time_minutes: Optional[int] = None
+    special_equipment: List[str] = field(default_factory=list)
+    critical_techniques: List[str] = field(default_factory=list)
+    common_failures: List[str] = field(default_factory=list)
+    success_indicators: List[str] = field(default_factory=list)
+    notes: str = ""
+    
+    def get_all_required_functions(self) -> List[FunctionalRole]:
+        """Get all functional roles needed across all components"""
+        functions = set()
+        for component in self.components:
+            functions.update(component.required_functions)
+        return list(functions)
+    
+    def get_texture_profile(self) -> List[TextureProfile]:
+        """Get all desired textures across components"""
+        textures = set()
+        for component in self.components:
+            textures.update(component.texture_targets)
+        return list(textures)
+    
+    def estimate_complexity_score(self) -> float:
+        """
+        Calculate complexity score (0-100)
+        Based on components, techniques, and difficulty
+        """
+        base_score = {
+            DifficultyLevel.BEGINNER: 20,
+            DifficultyLevel.INTERMEDIATE: 40,
+            DifficultyLevel.ADVANCED: 60,
+            DifficultyLevel.EXPERT: 80
+        }[self.difficulty]
+        
+        # Add complexity for multiple components
+        component_score = len(self.components) * 5
+        
+        # Add complexity for special techniques
+        technique_score = len(self.critical_techniques) * 3
+        
+        total = min(100, base_score + component_score + technique_score)
+        return total
+    
+    def to_dict(self) -> Dict:
+        """Convert dessert to dictionary for JSON serialization"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'category': self.category.value,
+            'components': [
+                {
+                    'name': comp.name,
+                    'required_functions': [
+                        f.value for f in comp.required_functions
+                    ],
+                    'texture_targets': [
+                        t.value for t in comp.texture_targets
+                    ],
+                    'typical_ratio_percent': comp.typical_ratio_percent,
+                    'critical_properties': comp.critical_properties
+                }
+                for comp in self.components
+            ],
+            'difficulty': self.difficulty.value,
+            'typical_yield': self.typical_yield,
+            'preparation_time_minutes': self.preparation_time_minutes,
+            'baking_temp_celsius': self.baking_temp_celsius,
+            'baking_time_minutes': self.baking_time_minutes,
+            'special_equipment': self.special_equipment,
+            'critical_techniques': self.critical_techniques,
+            'common_failures': self.common_failures,
+            'success_indicators': self.success_indicators,
+            'complexity_score': self.estimate_complexity_score(),
+            'notes': self.notes
+        }
+    
+    def __repr__(self) -> str:
+        return (
+            f"Dessert(id='{self.id}', name='{self.name}', "
+            f"category={self.category.value})"
+        )
+
+
+# Predefined dessert templates
+def create_eclair_template() -> Dessert:
+    """Create template for vegan éclair"""
+    return Dessert(
+        id="eclair",
+        name="Éclair",
+        category=DessertCategory.CHOUX,
+        components=[
+            ComponentRequirements(
+                name="Choux Pastry Shell",
+                required_functions=[
+                    FunctionalRole.FAT_STRUCTURING,
+                    FunctionalRole.FOAMING,
+                    FunctionalRole.BINDING,
+                    FunctionalRole.MOISTURE_RETENTION
+                ],
+                texture_targets=[TextureProfile.CRISPY, TextureProfile.AIRY],
+                typical_ratio_percent=40,
+                critical_properties={
+                    'fat_content': (15, 25),
+                    'water_content': (50, 60),
+                    'protein_content': (8, 12)
+                }
+            ),
+            ComponentRequirements(
+                name="Pastry Cream Filling",
+                required_functions=[
+                    FunctionalRole.THICKENING,
+                    FunctionalRole.EMULSIFICATION,
+                    FunctionalRole.FLAVOR_CARRIER,
+                    FunctionalRole.MOISTURE_RETENTION
+                ],
+                texture_targets=[TextureProfile.CREAMY, TextureProfile.SMOOTH],
+                typical_ratio_percent=50,
+                critical_properties={
+                    'fat_content': (8, 15),
+                    'viscosity_cps': (5000, 15000)
+                }
+            ),
+            ComponentRequirements(
+                name="Chocolate Glaze",
+                required_functions=[
+                    FunctionalRole.FAT_STRUCTURING,
+                    FunctionalRole.CRYSTALLIZATION,
+                    FunctionalRole.FLAVOR_CARRIER
+                ],
+                texture_targets=[TextureProfile.SMOOTH],
+                typical_ratio_percent=10,
+                critical_properties={
+                    'fat_content': (30, 40)
+                }
+            )
+        ],
+        difficulty=DifficultyLevel.INTERMEDIATE,
+        typical_yield=12,
+        preparation_time_minutes=90,
+        baking_temp_celsius=200,
+        baking_time_minutes=30,
+        special_equipment=["piping bag", "pastry tips"],
+        critical_techniques=[
+            "choux paste preparation",
+            "proper piping technique",
+            "steam management during baking",
+            "pastry cream tempering"
+        ],
+        common_failures=[
+            "shells collapse after baking (insufficient structure)",
+            "shells don't puff (too much fat or moisture)",
+            "cream is too thin (insufficient thickening)",
+            "glaze is grainy (improper chocolate tempering)"
+        ],
+        success_indicators=[
+            "hollow, crispy shells",
+            "smooth, stable cream",
+            "glossy glaze",
+            "no sogginess after filling"
+        ],
+        notes="Critical: proper steam in oven for initial puff"
+    )
+
+
+def create_creme_brulee_template() -> Dessert:
+    """Create template for vegan crème brûlée"""
+    return Dessert(
+        id="creme_brulee",
+        name="Crème Brûlée",
+        category=DessertCategory.CUSTARD,
+        components=[
+            ComponentRequirements(
+                name="Custard Base",
+                required_functions=[
+                    FunctionalRole.THICKENING,
+                    FunctionalRole.EMULSIFICATION,
+                    FunctionalRole.BINDING,
+                    FunctionalRole.FLAVOR_CARRIER
+                ],
+                texture_targets=[
+                    TextureProfile.CREAMY,
+                    TextureProfile.SMOOTH
+                ],
+                typical_ratio_percent=90,
+                critical_properties={
+                    'fat_content': (15, 25),
+                    'protein_content': (3, 6),
+                    'viscosity_cps': (3000, 8000)
+                }
+            ),
+            ComponentRequirements(
+                name="Caramelized Sugar Top",
+                required_functions=[
+                    FunctionalRole.CRYSTALLIZATION,
+                    FunctionalRole.BROWNING
+                ],
+                texture_targets=[TextureProfile.CRUNCHY],
+                typical_ratio_percent=10,
+                critical_properties={}
+            )
+        ],
+        difficulty=DifficultyLevel.INTERMEDIATE,
+        typical_yield=6,
+        preparation_time_minutes=60,
+        baking_temp_celsius=150,
+        baking_time_minutes=40,
+        special_equipment=["ramekins", "kitchen torch", "water bath"],
+        critical_techniques=[
+            "gentle heating to avoid curdling",
+            "water bath (bain-marie) baking",
+            "proper caramelization technique",
+            "temperature control"
+        ],
+        common_failures=[
+            "custard curdles (too high temperature)",
+            "custard doesn't set (insufficient thickener)",
+            "sugar burns instead of caramelizes",
+            "watery texture (improper emulsification)"
+        ],
+        success_indicators=[
+            "smooth, set custard with slight jiggle",
+            "even caramelized sugar crust",
+            "no bubbles or cracks",
+            "clean release from ramekin"
+        ],
+        notes="Coconut cream base works excellently for richness"
+    )
+
+
+# Example usage
+if __name__ == "__main__":
+    eclair = create_eclair_template()
+    print(eclair)
+    print(f"Required functions: {eclair.get_all_required_functions()}")
+    print(f"Complexity score: {eclair.estimate_complexity_score()}")
+    print(f"\nTexture profile: {eclair.get_texture_profile()}")
