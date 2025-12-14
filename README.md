@@ -94,7 +94,40 @@ npm install
 npm start
 ```
 
-## Usage Example
+## Usage
+
+### 🌐 Web Interface (Recommended for Demos)
+
+1. Start the server:
+```bash
+cd backend
+python3 app.py
+```
+
+2. Open your browser to: **http://localhost:5001**
+
+3. Use the simple web form to:
+   - Select dessert type
+   - Set dietary constraints
+   - Enter budget and servings
+   - Generate recipe instantly
+
+**Perfect for demos and non-technical users!** See `DEMO_GUIDE.md` for detailed instructions.
+
+### 🔌 API Usage
+
+```bash
+curl -X POST http://localhost:5001/api/formulate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "dessert_type": "eclair",
+    "dietary_constraints": ["vegan", "nut_free"],
+    "budget_per_unit": 3.50,
+    "yield_servings": 12
+  }'
+```
+
+### 🐍 Python Usage
 
 ```python
 from engine.formulation_engine import FormulationEngine
@@ -103,16 +136,14 @@ engine = FormulationEngine()
 
 request = {
     "dessert_type": "eclair",
-    "texture": "crispy_shell_creamy_filling",
     "dietary_constraints": ["vegan", "nut_free"],
-    "budget_per_unit": 2.50,
+    "budget_per_unit": 3.50,
+    "yield_servings": 12,
     "sustainability_priority": "low_co2"
 }
 
 result = engine.formulate(request)
 print(result["recipe"])
-print(result["sustainability_metrics"])
-print(result["cost_analysis"])
 ```
 
 ## Target Users

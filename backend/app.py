@@ -3,7 +3,7 @@ Plantify Dessert - Flask Application
 Main API server for plant-based dessert formulation
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import json
 from pathlib import Path
@@ -39,7 +39,13 @@ cost_analyzer = CostAnalyzer()
 
 @app.route('/')
 def home():
-    """API home endpoint"""
+    """Serve the web interface"""
+    return render_template('index.html')
+
+
+@app.route('/api')
+def api_info():
+    """API information endpoint"""
     return jsonify({
         'name': 'Plantify Dessert API',
         'version': '1.0.0',
